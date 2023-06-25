@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plant Search</title>
+  <style>
+    @media (max-width: 600px) {
+      body {
+        background-color: #87ceeb;
+      }
+      }
+      
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    
+    #container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    #searchForm {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    #searchForm input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      font-size: 16px;
+    }
+    
+    #searchForm input[type="submit"] {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    #plantDetails {
+      display: none;
+    }
+    
+    #plantDetails h2 {
+      margin-top: 0;
+    }
+    
+    #plantDetails p {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Plant Search</h1>
+    <form id="searchForm">
+      <input type="text" id="plantInput" placeholder="Enter a plant name">
+      <input type="submit" value="Search">
+    </form>
+    <div id="plantDetails">
+      <h2 id="plantName"></h2>
+      <p><strong>Species:</strong> <span id="species"></span></p>
+      <p><strong>Life Span:</strong> <span id="lifeSpan"></span></p>
+      <p><strong>Cultivation Procedure:</strong> <span id="cultivationProcedure"></span></p>
+      <p><strong>Benefits and Effects:</strong> <span id="benefitsEffects"></span></p>
+      <p><strong>Areas of Cultivation:</strong> <span id="areasOfCultivation"></span></p>
+      <p><strong>Cultivation Requirements:</strong> <span id="cultivationRequirements"></span></p>
+    </div>
+  </div>
+  
+  <script>
+    // Plant data
+    var plantData = [
+      {
+        name: "Rose",
+        species: "Rosa",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil and provide regular watering and sunlight.",
+        benefitsEffects: "Used in perfumes, skincare, and herbal remedies. Has soothing and anti-inflammatory properties.",
+        areasOfCultivation: "Various regions worldwide.",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering."
+      },
+      {
+        name: "Lavender",
+        species: "Lavandula",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil and provide sunlight and occasional watering.",
+        benefitsEffects: "Used in aromatherapy, skincare, and herbal remedies. Has calming and antibacterial properties.",
+        areasOfCultivation: "Mediterranean region, Europe, North America, and Australia.",
+        cultivationRequirements: "Full sun, well-draining soil, low to moderate watering."
+      },
+      {
+        name: "Sunflower",
+        species: "Helianthus",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil and provide full sun and regular watering.",
+        benefitsEffects: "Used for ornamental purposes and edible seeds. Attracts pollinators and provides wildlife habitat.",
+        areasOfCultivation: "North America, Europe, and other regions.",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/sunflower.jpg"
+      },
+      {
+        name: "Tomato",
+        species: "Solanum lycopersicum",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil and provide full sun and regular watering. Support the plant with stakes or cages.",
+        benefitsEffects: "Rich in vitamins and antioxidants. Used in various culinary dishes.",
+        areasOfCultivation: "Worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/tomato.jpg"
+      },
+      {
+        name: "Carrot",
+        species: "Daucus carota",
+        lifeSpan: "Biennial",
+        cultivationProcedure: "Plant in loose, well-draining soil. Keep the soil consistently moist. Harvest when roots reach the desired size.",
+        benefitsEffects: "High in beta-carotene and fiber. Supports eye health and immune system.",
+        areasOfCultivation: "Worldwide",
+        cultivationRequirements: "Full sun to partial shade, well-draining soil, regular watering.",
+        image: "https://example.com/carrot.jpg"
+      },
+      {
+        name: "Mango",
+        species: "Mangifera indica",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil with good organic matter. Provide full sun and regular watering.",
+        benefitsEffects: "Rich in vitamins and minerals. Known for its delicious taste and aroma.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/mango.jpg"
+      },
+      {
+        name: "Neem Tree",
+        species: "Azadirachta indica",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil. Tolerant of various soil types. Provide full sun and occasional watering.",
+        benefitsEffects: "Used in traditional medicine and skincare products. Has antibacterial and insect-repellent properties.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun to partial shade, well-draining soil, occasional watering.",
+        image: "https://example.com/neem.jpg"
+      },
+      {
+        name: "Maize",
+        species: "Zea mays",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-drained soil with good organic matter. Provide full sun and regular watering.",
+        benefitsEffects: "Used as a food staple and animal feed. Rich in carbohydrates and dietary fiber.",
+        areasOfCultivation: "Worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/maize.jpg"
+      },
+      {
+        name: "Rice",
+        species: "Oryza sativa",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in flooded paddy fields. Maintain consistent water levels. Harvest when grains are fully mature.",
+        benefitsEffects: "One of the most important staple foods. Rich in carbohydrates.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Flooded paddy fields, warm temperatures, regular watering.",
+        image: "https://example.com/rice.jpg"
+      },
+      {
+        name: "Wheat",
+        species: "Triticum spp.",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when grains are fully mature.",
+        benefitsEffects: "Commonly used for making flour and bread. Good source of carbohydrates and dietary fiber.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/wheat.jpg"
+      },
+      {
+        name: "Groundnut",
+        species: "Arachis hypogaea",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the plants mature.",
+        benefitsEffects: "Rich in protein, healthy fats, and antioxidants. Used in culinary preparations and snacks.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/groundnut.jpg"
+      },
+      {
+        name: "Ragi",
+        species: "Eleusine coracana",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the grains are mature.",
+        benefitsEffects: "Nutritious grain rich in fiber, calcium, and iron. Used for making porridge and baked goods.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/ragi.jpg"
+      },
+      {
+        name: "Pearl Millet",
+        species: "Pennisetum glaucum",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the grains are mature.",
+        benefitsEffects: "Drought-tolerant grain rich in protein and dietary fiber. Used as a staple food in arid regions.",
+        areasOfCultivation: "Dry and arid regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/pearl_millet.jpg"
+      },
+      {
+        name: "Black Gram",
+        species: "Vigna mungo",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the pods mature.",
+        benefitsEffects: "Rich in protein and essential nutrients. Used in various culinary preparations.",
+        areasOfCultivation: "India, Southeast Asia, and other regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/black_gram.jpg"
+      },
+      {
+        name: "Sugarcane",
+        species: "Saccharum officinarum",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the cane is mature.",
+        benefitsEffects: "Source of sugar and biofuel. Used in culinary and industrial applications.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/sugarcane.jpg"
+      },
+      {
+        name: "Cashew Nut",
+        species: "Anacardium occidentale",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and occasional watering. Harvest when the nuts are ripe.",
+        benefitsEffects: "Rich in healthy fats and minerals. Used in culinary preparations and snacks.",
+        areasOfCultivation: "Tropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, occasional watering.",
+        image: "https://example.com/cashew_nut.jpg"
+      },
+      {
+        name: "Coffee",
+        species: "Coffea spp.",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil with organic matter. Provide partial shade and regular watering. Harvest when the berries are ripe.",
+        benefitsEffects: "Source of caffeine and used to make coffee beverages. Popular worldwide.",
+        areasOfCultivation: "Tropical regions",
+        cultivationRequirements: "Partial shade, well-draining soil, regular watering.",
+        image: "https://example.com/coffee.jpg"
+      },
+      {
+        name: "Grapes",
+        species: "Vitis vinifera",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the grapes are ripe.",
+        benefitsEffects: "Used for making wine, juices, and raisins. Rich in antioxidants.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/grapes.jpg"
+      },
+      {
+        name: "Green Gram",
+        species: "Vigna radiata",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the pods are mature.",
+        benefitsEffects: "Rich in protein and dietary fiber. Used in culinary preparations.",
+        areasOfCultivation: "India, Southeast Asia, and other regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/green_gram.jpg"
+      },
+      {
+        name: "Paddy",
+        species: "Oryza sativa",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in flooded paddy fields. Maintain consistent water levels. Harvest when grains are fully mature.",
+        benefitsEffects: "One of the most important staple foods. Rich in carbohydrates.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Flooded paddy fields, warm temperatures, regular watering.",
+        image: "https://example.com/paddy.jpg"
+      },
+      {
+        name: "Cotton",
+        species: "Gossypium",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-drained soil. Provide full sun and moderate watering. Harvest when bolls are mature.",
+        benefitsEffects: "Used for fiber production. Versatile material for textiles.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, moderate watering.",
+        image: "https://example.com/cotton.jpg"
+      },
+      {
+        name: "Coconut",
+        species: "Cocos nucifera",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-drained soil. Provide full sun and regular watering. Harvest when the coconuts are mature.",
+        benefitsEffects: "Versatile fruit used for water, oil, milk, and culinary applications. Rich in healthy fats and electrolytes.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/coconut.jpg"
+      },
+      {
+        name: "Ginger",
+        species: "Zingiber officinale",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant ginger rhizomes in well-drained soil. Provide partial shade and regular watering. Harvest when the rhizomes are mature.",
+        benefitsEffects: "Used as a spice and in traditional medicine. Known for its anti-inflammatory properties.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Partial shade, well-draining soil, regular watering.",
+        image: "https://example.com/ginger.jpg"
+      },
+      {
+        name: "Turmeric",
+        species: "Curcuma longa",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant turmeric rhizomes in well-drained soil. Provide partial shade and regular watering. Harvest when the rhizomes are mature.",
+        benefitsEffects: "Used as a spice and in traditional medicine. Known for its anti-inflammatory and antioxidant properties.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Partial shade, well-draining soil, regular watering.",
+        image: "https://example.com/turmeric.jpg"
+      },
+      {
+        name: "Ladies Finger",
+        species: "Abelmoschus esculentus",
+        lifeSpan: "Annual",
+        cultivationProcedure: "Plant in well-draining soil. Provide full sun and regular watering. Harvest when the pods are young and tender.",
+        benefitsEffects: "Rich in dietary fiber and vitamins. Used in culinary dishes and stews.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/ladies_finger.jpg"
+      },
+      {
+        name: "Drumstick",
+        species: "Moringa oleifera",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant in well-drained soil. Provide full sun and regular watering. Harvest the drumsticks when they are mature but still tender.",
+        benefitsEffects: "Nutrient-rich and used in culinary dishes. Known for its medicinal properties.",
+        areasOfCultivation: "Tropical and subtropical regions",
+        cultivationRequirements: "Full sun, well-draining soil, regular watering.",
+        image: "https://example.com/drumstick.jpg"
+      },
+      {
+        name: "Onion",
+        species: "Allium cepa",
+        lifeSpan: "Biennial",
+        cultivationProcedure: "Plant onion sets or seeds in well-drained soil. Provide full sun and moderate watering. Harvest when the bulbs mature.",
+        benefitsEffects: "Used as a culinary ingredient. Rich in antioxidants and sulfur compounds.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, moderate watering.",
+        image: "https://example.com/onion.jpg"
+      },
+      {
+        name: "Garlic",
+        species: "Allium sativum",
+        lifeSpan: "Perennial",
+        cultivationProcedure: "Plant garlic cloves in well-drained soil. Provide full sun and moderate watering. Harvest when the bulbs are mature.",
+        benefitsEffects: "Used as a culinary ingredient and in traditional medicine. Known for its antimicrobial and heart-healthy properties.",
+        areasOfCultivation: "Various regions worldwide",
+        cultivationRequirements: "Full sun, well-draining soil, moderate watering.",
+        image: "https://example.com/garlic.jpg"
+      }
+    
+      // Add more plant data here...
+    ];
+    
+    // Search functionality
+    var searchForm = document.getElementById('searchForm');
+    var plantInput = document.getElementById('plantInput');
+    var plantDetails = document.getElementById('plantDetails');
+    
+    searchForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var searchTerm = plantInput.value.toLowerCase();
+      var matchedPlant = plantData.find(function(plant) {
+        return plant.name.toLowerCase() === searchTerm;
+      });
+      
+      if (matchedPlant) {
+        plantDetails.style.display = 'block';
+        document.getElementById('plantName').textContent = matchedPlant.name;
+        document.getElementById('species').textContent = matchedPlant.species;
+        document.getElementById('lifeSpan').textContent = matchedPlant.lifeSpan;
+        document.getElementById('cultivationProcedure').textContent = matchedPlant.cultivationProcedure;
+        document.getElementById('benefitsEffects').textContent = matchedPlant.benefitsEffects;
+        document.getElementById('areasOfCultivation').textContent = matchedPlant.areasOfCultivation;
+        document.getElementById('cultivationRequirements').textContent = matchedPlant.cultivationRequirements;
+      } else {
+        plantDetails.style.display = 'none';
+        alert('Plant not found.');
+      }
+    });
+  </script>
+</body>
+</html>
